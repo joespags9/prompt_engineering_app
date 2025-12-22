@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Next{% endblock %}
+
+{% block content %}
+<div>
+    <h1 class="text-center text-5xl mb-4">The End</h1>
+    <h1 class="text-center mb-8">Congratulations! You now understand prompt engineering! </h1>
+    <h1 class="text-center mb-8">Here's your final prompt and output:</h1>
+
+    <h2 class="text-center mb-4 font-bold" id="final-prompt-label"></h2>
+    <h2 class="text-center mb-8 text-gray-700" id="final-prompt"></h2>
+
+    <h2 class="text-center mb-4 font-bold" id="final-output-label"></h2>
+    <h2 class="text-center mb-8 text-gray-700 whitespace-pre-wrap" id="final-output"></h2>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            const finalPrompt = sessionStorage.getItem('labor_prompt');
+            const finalOutput = sessionStorage.getItem('labor_output');
+
+            if (finalPrompt) {
+                document.getElementById('final-prompt-label').textContent = 'Prompt:';
+                document.getElementById('final-prompt').textContent = finalPrompt;
+            }
+            if (finalOutput) {
+                document.getElementById('final-output-label').textContent = 'Output:';
+                document.getElementById('final-output').textContent = finalOutput;
+            }
+        });
+    </script>
+</div>
+{% endblock %}

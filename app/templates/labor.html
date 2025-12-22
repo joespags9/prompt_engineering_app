@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Next{% endblock %}
+
+{% block content %}
+<div>
+    <h1 class="text-center text-5xl mb-4">Division of Labor</h1>
+    <h1 class="text-center mb-8">Sometimes, complex tasks can overwhelm an AI, so it can help to divide the prompt into one task at a time. The prompt we've been using up to this point has an issue in that regard, since it's not clear what {style} connects to. Try this instead: </h1>
+    <h2 class="text-left mb-8 text-gray-500">Create a story about {person} traveling to {place} to {activity}. The story should be told in {style}, have a clear narrative arc, and be presented as {format}</h2>
+    <h1 class="text-center mb-8">Example: "Create a story about Batman traveling to London to drink tea. The story should be told in Shakespearean style, have a clear narrative arc, and be presented as one paragraph" </h1>
+    <h1 class="text-center mb-8">It is recommended you copy and paste the gray text into the prompt box and fill in the bracketed variables </h1>
+
+    <form id="prompt-form" class="max-w-4xl mx-auto mb-8" onsubmit="handleSubmit(event)">
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Prompt:</label>
+            <div class="flex gap-4">
+                <textarea id="prompt-input" name="prompt" rows="4" placeholder="Enter your prompt here..."
+                    class="flex-1 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                <button type="submit" class="bg-transparent border-none cursor-pointer self-start">
+                    <img id="openai-btn" src="/static/open_ai.png" alt="Generate" class="h-16 hover:opacity-80 transition-opacity">
+                </button>
+            </div>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Output:</label>
+            <textarea id="output-area" rows="8" readonly
+                class="w-full p-4 border border-gray-300 rounded-lg bg-gray-50"></textarea>
+        </div>
+        <script>
+            // Load saved data or previous page's prompt on page load
+            window.addEventListener('DOMContentLoaded', function() {
+                const savedPrompt = sessionStorage.getItem('labor_prompt');
+                const savedOutput = sessionStorage.getItem('labor_output');
+                const previousPrompt = sessionStorage.getItem('format_prompt');
+
+                if (savedPrompt) {
+                    document.getElementById('prompt-input').value = savedPrompt;
+                } else if (previousPrompt) {
+                    document.getElementById('prompt-input').value = previousPrompt;
+                }
+
+                if (savedOutput) {
+                    document.getElementById('output-area').value = savedOutput;
+                }
+            });
+
+            async function handleSubmit(event) {
+                event.preventDefault();
+
+                const img = document.getElementById('openai-btn');
+                const outputArea = document.getElementById('output-area');
+                const promptInput = document.getElementById('prompt-input');
+                const prompt = promptInput.value;
+
+                if (!prompt.trim()) return;
+
+                // Save prompt to session storage
+                sessionStorage.setItem('labor_prompt', prompt);
+
+                // Start spinner and clear output
+                img.style.animation = 'spin 1s linear infinite';
+                outputArea.value = '';
+
+                try {
+                    const formData = new FormData();
+                    formData.append('prompt', prompt);
+
+                    const response = await fetch('/labor/stream', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+                        if (done) break;
+
+                        const chunk = decoder.decode(value);
+                        outputArea.value += chunk;
+                        outputArea.scrollTop = outputArea.scrollHeight;
+                    }
+
+                    // Save output to session storage
+                    sessionStorage.setItem('labor_output', outputArea.value);
+                } catch (error) {
+                    outputArea.value = 'Error: ' + error.message;
+                } finally {
+                    img.style.animation = '';
+                }
+            }
+        </script>
+        <style>
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        </style>
+    </form>
+
+    <div class="flex justify-center">
+        <a href="/examples" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Next
+        </a>
+    </div>
+</div>
+{% endblock %}

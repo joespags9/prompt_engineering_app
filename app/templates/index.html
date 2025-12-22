@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h1 class="text-center text-5xl mb-4">Welcome to Prompt Engineering: The Game</h1>
+<h1 class="text-center text-2xl text-gray-500 mb-4">Creating a strong prompt is based on 5 principles:</h1>
+<div class="flex justify-center text-gray-500 mb-4">
+    <ol class="list-decimal list-inside text-left space-y-2">
+        <li>Clarity</li>
+        <li>Direction</li>
+        <li>Formatting</li>
+        <li>Examples</li>
+        <li>Division of Labor</li>
+    </ol>
+</div>
+<h1 class="text-center text-2xl text-gray-500 mb-4">This game will guide you through each step</h1>
+<div class="flex justify-center">
+    <a href="/first" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Next
+    </a>
+</div>
+{% endblock %}

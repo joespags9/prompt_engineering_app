@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Next{% endblock %}
+
+{% block content %}
+<div>
+    <h1 class="text-center text-5xl mb-4">Examples</h1>
+    <h1 class="text-center mb-8">Perhaps you had something a bit different in mind when you got the output? You could include examples to help (we won't be doing that in this game, though) </h1>
+    <h2 class="text-center mb-8 text-gray-500">Create a story about {person} traveling to {place} to {activity}. The story should be told in {style}, have a clear narrative arc, and be presented as {format}</h2>
+    <h2 class="text-center mb-8 text-gray-500">Example: </h2>
+    <h2 class="text-center mb-8 text-gray-500">Prompt: {prompt} </h2>
+    <h2 class="text-center mb-8 text-gray-500">Output: {output} </h2>
+    <h1 class="text-center mb-8">Example: "Create a story about Batman traveling to London to drink tea. The story should be told in Shakespearan style, have a clear narrative arc, and be presented as one paragraph"</h1>
+    <h2 class="text-center mb-8">Example: </h2>
+    <h2 class="text-center mb-8">Prompt: Create a story about Superman traveling to Antarctica to fight a sea serpent. The story should be told in poetic language, have a clear narrative arc, and be presented as two stanzas </h2>
+    <h2 class="text-center mb-12">Output:</h2>
+    <h2 class="text-center mb-8">Beneath the icy Antarctic sky so wide</h2>
+    <h2 class="text-center mb-8">Bold Superman strode with valor as his guide</h2>
+    <h2 class="text-center mb-8">The winds did howl, the snowflakes danced and spun</h2>
+    <h2 class="text-center mb-12">Yet onward he marched, to face the serpent's run</h2>
+    <h2 class="text-center mb-8">From frosted waves emerged a creature vast</h2>
+    <h2 class="text-center mb-8">Its eyes like glaciers, teeth like frozen mast</h2>
+    <h2 class="text-center mb-8">With courage bright, he battled through the storm</h2>
+    <h2 class="text-center mb-8">And victory crowned him, steadfast and transformed</h2>
+
+    <div class="flex justify-center">
+        <a href="/end" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Next
+        </a>
+    </div>
+</div>
+{% endblock %}
