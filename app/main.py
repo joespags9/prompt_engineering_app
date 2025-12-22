@@ -4,21 +4,10 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from app.chatgpt_client import ChatGPTClient
 import json
-import os
 
 app = FastAPI()
-
-# Get the base directory
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Mount static files with the correct path
-static_path = os.path.join(BASE_DIR, "app", "static")
-if os.path.exists(static_path):
-    app.mount("/static", StaticFiles(directory=static_path), name="static")
-
-# Set up templates with the correct path
-templates_path = os.path.join(BASE_DIR, "app", "templates")
-templates = Jinja2Templates(directory=templates_path)
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+templates = Jinja2Templates(directory="app/templates")
 
 # Initialize ChatGPT client
 try:
@@ -162,6 +151,3 @@ def end_page(request: Request):
         "end.html",
         {"request": request}
     )
-
-# Vercel handler
-handler = app
