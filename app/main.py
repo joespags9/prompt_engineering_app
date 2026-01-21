@@ -33,6 +33,13 @@ def index_post(request: Request, user_input: str = Form(...)):
         }
     )
 
+@app.get("/options", response_class=HTMLResponse)
+def options_page(request: Request):
+    return templates.TemplateResponse(
+        "options.html",
+        {"request": request}
+    )
+
 @app.get("/first", response_class=HTMLResponse)
 def first_page(request: Request):
     return templates.TemplateResponse(

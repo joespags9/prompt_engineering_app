@@ -4,14 +4,14 @@
 {% block content %}
 <div>
     <h1 class="text-center text-5xl mb-4">Division of Labor</h1>
-    <h1 class="text-center mb-8">Sometimes, complex tasks can overwhelm an AI, so it can help to divide the prompt into one task at a time. The prompt we've been using up to this point has an issue in that regard, since it's not clear what {style} connects to. Try this instead: </h1>
-    <h2 class="text-left mb-8 text-gray-500">Create a story about {person} traveling to {place} to {activity}. The story should be told in {style}, have a clear narrative arc, and be presented as {format}</h2>
-    <h1 class="text-center mb-8">Example: "Create a story about Batman traveling to London to drink tea. The story should be told in Shakespearean style, have a clear narrative arc, and be presented as one paragraph" </h1>
-    <h1 class="text-center mb-8">It is recommended you copy and paste the gray text into the prompt box and fill in the bracketed variables </h1>
+    <h1 class="text-center mb-8" id="instruction-text"></h1>
+    <h2 class="text-left mb-8 text-gray-500" id="template-text"></h2>
+    <h1 class="text-center mb-8" id="example-text"></h1>
+    <h1 class="text-center mb-8" id="recommendation-text"></h1>
 
     <form id="prompt-form" class="max-w-4xl mx-auto mb-8" onsubmit="handleSubmit(event)">
         <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2">Prompt:</label>
+            <label class="block text-gray-700 text-sm font-bold mb-2">Prompt (click the OpenAI button to generate):</label>
             <div class="flex gap-4">
                 <textarea id="prompt-input" name="prompt" rows="4" placeholder="Enter your prompt here..."
                     class="flex-1 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
@@ -26,11 +26,47 @@
                 class="w-full p-4 border border-gray-300 rounded-lg bg-gray-50"></textarea>
         </div>
         <script>
+            // Content based on tab selection
+            const tabContent = {
+                'tab1': {
+                    instruction: 'Sometimes, complex tasks can overwhelm an AI, so it can help to divide the prompt into one task at a time. The prompt we\'ve been using up to this point has an issue in that regard, since it\'s not clear what {style} connects to. Try this instead:',
+                    template: 'Create a story about {person} traveling to {place} to {activity}. The story should be told in {style}, have a clear narrative arc, and be presented as {format}',
+                    example: 'Example: "Create a story about Batman traveling to London to drink tea. The story should be told in Shakespearean style, have a clear narrative arc, and be presented as one paragraph"',
+                    recommendation: 'It is recommended you copy and paste the gray text into the prompt box and fill in the bracketed variables'
+                },
+                'tab2': {
+                    instruction: 'Sometimes, complex tasks can overwhelm an AI. Breaking down each requirement clearly helps the AI understand what connects to what. Try this instead:',
+                    template: 'Explain {concept} to someone at a {audience level} level. Include information about {specific aspect}. Use {explanation style} to make it understandable. Format the response as {format}',
+                    example: 'Example: "Explain quantum mechanics to someone at a 5th grade level. Include information about why particles can be in two places at once. Use simple analogies to make it understandable. Format the response as 3 bullet points"',
+                    recommendation: 'It is recommended you copy and paste the gray text into the prompt box and fill in the bracketed variables'
+                },
+                'tab3': {
+                    instruction: 'Complex requests with multiple criteria can confuse the AI. Structuring each requirement on its own helps clarify what you want. Try this instead:',
+                    template: 'Give me {number} ideas for {topic}. The ideas should focus on {criteria}. Use a {tone/style} approach when generating ideas. Present them as {format}',
+                    example: 'Example: "Give me 10 ideas for things to do when visiting Boston. The ideas should focus on historical sites. Use a family-friendly approach when generating ideas. Present them as a numbered list with brief descriptions"',
+                    recommendation: 'It is recommended you copy and paste the gray text into the prompt box and fill in the bracketed variables'
+                },
+                'tab4': {
+                    instruction: 'Letter writing has many components - topic, tone, focus, and format. Separating these clearly helps the AI produce better results. Try this instead:',
+                    template: 'Write a {type} letter to {recipient} regarding {topic}. The letter should focus on {main point}. Use a {tone} tone throughout. Format it as {format}',
+                    example: 'Example: "Write a complaint letter to my city councilman regarding noisy neighbors. The letter should focus on late-night disturbances. Use a respectful but firm tone throughout. Format it as a formal business letter with 3 paragraphs"',
+                    recommendation: 'It is recommended you copy and paste the gray text into the prompt box and fill in the bracketed variables'
+                }
+            };
+
             // Load saved data or previous page's prompt on page load
             window.addEventListener('DOMContentLoaded', function() {
                 const savedPrompt = sessionStorage.getItem('labor_prompt');
                 const savedOutput = sessionStorage.getItem('labor_output');
                 const previousPrompt = sessionStorage.getItem('format_prompt');
+                const selectedTab = sessionStorage.getItem('selected_tab') || 'tab1';
+
+                // Load content based on selected tab
+                const content = tabContent[selectedTab];
+                document.getElementById('instruction-text').textContent = content.instruction;
+                document.getElementById('template-text').textContent = content.template;
+                document.getElementById('example-text').textContent = content.example;
+                document.getElementById('recommendation-text').textContent = content.recommendation;
 
                 if (savedPrompt) {
                     document.getElementById('prompt-input').value = savedPrompt;
@@ -98,7 +134,10 @@
         </style>
     </form>
 
-    <div class="flex justify-center">
+    <div class="flex justify-center gap-4">
+        <a href="/format" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+            Back
+        </a>
         <a href="/examples" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Next
         </a>

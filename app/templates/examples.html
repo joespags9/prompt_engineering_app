@@ -4,25 +4,77 @@
 {% block content %}
 <div>
     <h1 class="text-center text-5xl mb-4">Examples</h1>
-    <h1 class="text-center mb-8">Perhaps you had something a bit different in mind when you got the output? You could include examples to help (we won't be doing that in this game, though) </h1>
-    <h2 class="text-center mb-8 text-gray-500">Create a story about {person} traveling to {place} to {activity}. The story should be told in {style}, have a clear narrative arc, and be presented as {format}</h2>
+    <h1 class="text-center mb-8" id="instruction-text"></h1>
+    <h2 class="text-center mb-8 text-gray-500" id="template-text"></h2>
     <h2 class="text-center mb-8 text-gray-500">Example: </h2>
     <h2 class="text-center mb-8 text-gray-500">Prompt: {prompt} </h2>
     <h2 class="text-center mb-8 text-gray-500">Output: {output} </h2>
-    <h1 class="text-center mb-8">Example: "Create a story about Batman traveling to London to drink tea. The story should be told in Shakespearan style, have a clear narrative arc, and be presented as one paragraph"</h1>
-    <h2 class="text-center mb-8">Example: </h2>
-    <h2 class="text-center mb-8">Prompt: Create a story about Superman traveling to Antarctica to fight a sea serpent. The story should be told in poetic language, have a clear narrative arc, and be presented as two stanzas </h2>
-    <h2 class="text-center mb-12">Output:</h2>
-    <h2 class="text-center mb-8">Beneath the icy Antarctic sky so wide</h2>
-    <h2 class="text-center mb-8">Bold Superman strode with valor as his guide</h2>
-    <h2 class="text-center mb-8">The winds did howl, the snowflakes danced and spun</h2>
-    <h2 class="text-center mb-12">Yet onward he marched, to face the serpent's run</h2>
-    <h2 class="text-center mb-8">From frosted waves emerged a creature vast</h2>
-    <h2 class="text-center mb-8">Its eyes like glaciers, teeth like frozen mast</h2>
-    <h2 class="text-center mb-8">With courage bright, he battled through the storm</h2>
-    <h2 class="text-center mb-8">And victory crowned him, steadfast and transformed</h2>
+    <h1 class="text-center mb-8" id="example-text"></h1>
+    <h2 class="text-center mb-8" id="example-label"></h2>
+    <h2 class="text-center mb-8" id="example-prompt"></h2>
+    <h2 class="text-center mb-12" id="example-output-label"></h2>
+    <div id="example-output-content"></div>
 
-    <div class="flex justify-center">
+    <script>
+        // Content based on tab selection
+        const tabContent = {
+            'tab1': {
+                instruction: 'Perhaps you had something a bit different in mind when you got the output? You could include examples to help guide the AI! (we won\'t be doing that in this game, though)',
+                template: 'Create a story about {person} traveling to {place} to {activity}. The story should be told in {style}, have a clear narrative arc, and be presented as {format}',
+                example: 'Example: "Create a story about Batman traveling to London to drink tea. The story should be told in Shakespearean style, have a clear narrative arc, and be presented as one paragraph"',
+                exampleLabel: 'Example:',
+                examplePrompt: 'Prompt: Create a story about Superman traveling to Antarctica to fight a sea serpent. The story should be told in poetic language, have a clear narrative arc, and be presented as two stanzas',
+                exampleOutputLabel: 'Output:',
+                exampleOutput: 'Beneath the icy Antarctic sky so wide, Bold Superman strode with valor as his guide. The winds did howl, the snowflakes danced and spun, Yet onward he marched, to face the serpent\'s run. From frosted waves emerged a creature vast, Its eyes like glaciers, teeth like frozen mast. With courage bright, he battled through the storm, And victory crowned him, steadfast and transformed.'
+            },
+            'tab2': {
+                instruction: 'If the AI\'s explanation style doesn\'t match what you want, showing an example can help! (we won\'t be doing that in this game, though)',
+                template: 'Explain {concept} to someone at a {audience level} level. Include information about {specific aspect}. Use {explanation style} to make it understandable. Format the response as {format}',
+                example: 'Example: "Explain quantum mechanics to someone at a 5th grade level. Include information about why particles can be in two places at once. Use simple analogies to make it understandable. Format the response as 3 bullet points"',
+                exampleLabel: 'Example:',
+                examplePrompt: 'Prompt: Explain photosynthesis to someone at a 3rd grade level. Include information about why plants need sunlight. Use everyday comparisons to make it understandable. Format the response as 3 bullet points',
+                exampleOutputLabel: 'Output:',
+                exampleOutput: '• Plants eat sunlight like we eat food! Their leaves work like tiny solar panels that catch the sun\'s energy.\n• They mix sunlight with water from their roots and air from around them - kind of like following a recipe to make their own food.\n• This food-making process gives off oxygen, which is the air we breathe - so plants are basically sharing their leftovers with us!'
+            },
+            'tab3': {
+                instruction: 'Want ideas in a particular style or format? Providing an example shows the AI exactly what you\'re looking for! (we won\'t be doing that in this game, though)',
+                template: 'Give me {number} ideas for {topic}. The ideas should focus on {criteria}. Use a {tone/style} approach when generating ideas. Present them as {format}',
+                example: 'Example: "Give me 10 ideas for things to do when visiting Boston. The ideas should focus on historical sites. Use a family-friendly approach when generating ideas. Present them as a numbered list with brief descriptions"',
+                exampleLabel: 'Example:',
+                examplePrompt: 'Prompt: Give me 5 ideas for weekend activities in New York City. The ideas should focus on cultural experiences. Use a budget-conscious approach when generating ideas. Present them as a numbered list with brief descriptions',
+                exampleOutputLabel: 'Output:',
+                exampleOutput: '1. Free Museum Days - Visit the Met or Natural History Museum on pay-what-you-wish days\n2. Central Park Concerts - Enjoy free outdoor performances at SummerStage\n3. Street Art Tours - Explore Brooklyn\'s Bushwick Collective murals for free\n4. Public Library Exhibitions - Browse rotating exhibits at the main branch\n5. Chinatown Food Walk - Sample authentic cuisine at affordable prices'
+            },
+            'tab4': {
+                instruction: 'If you need a specific writing style or structure, an example letter can guide the AI perfectly! (we won\'t be doing that in this game, though)',
+                template: 'Write a {type} letter to {recipient} regarding {topic}. The letter should focus on {main point}. Use a {tone} tone throughout. Format it as {format}',
+                example: 'Example: "Write a complaint letter to my city councilman regarding noisy neighbors. The letter should focus on late-night disturbances. Use a respectful but firm tone throughout. Format it as a formal business letter with 3 paragraphs"',
+                exampleLabel: 'Example:',
+                examplePrompt: 'Prompt: Write a thank you letter to a teacher regarding their mentorship. The letter should focus on specific ways they helped me grow. Use a warm and sincere tone throughout. Format it as a personal letter with 3 paragraphs',
+                exampleOutputLabel: 'Output:',
+                exampleOutput: 'Dear Ms. Johnson,\n\nI wanted to express my heartfelt gratitude for the incredible impact you\'ve had on my academic journey this year. Your patience in explaining complex topics and your willingness to stay after class to help me understand calculus concepts truly changed my relationship with mathematics.\n\nBeyond the subject matter, you taught me the value of persistence and critical thinking. When I struggled with problem-solving, you didn\'t just give me answers - you guided me to discover solutions on my own, building my confidence along the way.\n\nThank you for being more than just a teacher. Your dedication and genuine care for your students will stay with me throughout my life.\n\nWith sincere appreciation,\n[Student Name]'
+            }
+        };
+
+        // Load content on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const selectedTab = sessionStorage.getItem('selected_tab') || 'tab1';
+            const content = tabContent[selectedTab];
+
+            document.getElementById('instruction-text').textContent = content.instruction;
+            document.getElementById('template-text').textContent = content.template;
+            document.getElementById('example-text').textContent = content.example;
+            document.getElementById('example-label').textContent = content.exampleLabel;
+            document.getElementById('example-prompt').textContent = content.examplePrompt;
+            document.getElementById('example-output-label').textContent = content.exampleOutputLabel;
+            document.getElementById('example-output-content').innerHTML = '<h2 class="text-center mb-8">' + content.exampleOutput + '</h2>';
+        });
+    </script>
+
+    <div class="flex justify-center gap-4">
+        <a href="/labor" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+            Back
+        </a>
         <a href="/end" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Next
         </a>

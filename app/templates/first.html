@@ -4,13 +4,13 @@
 {% block content %}
 <div>
     <h1 class="text-center text-5xl mb-4">Let's get started!</h1>
-    <h1 class="text-center mb-8">Create a prompt similar to the following:</h1>
-    <h2 class="text-center mb-8 text-gray-500">Create a story where {insert person here} goes to {insert place here}</h2>
-    <h1 class="text-center mb-12">Example: "Create a story where Batman goes to London"</h1>
+    <h1 class="text-center mb-8" id="instruction-text">Create a prompt similar to the following:</h1>
+    <h2 class="text-center mb-8 text-gray-500" id="template-text"></h2>
+    <h1 class="text-center mb-12" id="example-text"></h1>
 
     <form id="prompt-form" class="max-w-4xl mx-auto mb-8" onsubmit="handleSubmit(event)">
         <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2">Prompt:</label>
+            <label class="block text-gray-700 text-sm font-bold mb-2">Prompt (click the OpenAI button to generate):</label>
             <div class="flex gap-4">
                 <textarea id="prompt-input" name="prompt" rows="4" placeholder="Enter your prompt here..."
                     class="flex-1 p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
@@ -25,10 +25,36 @@
                 class="w-full p-4 border border-gray-300 rounded-lg bg-gray-50"></textarea>
         </div>
         <script>
+            // Content based on tab selection
+            const tabContent = {
+                'tab1': {
+                    template: 'Create a story where {insert person here} goes to {insert place here}',
+                    example: 'Example: "Create a story where Batman goes to London"'
+                },
+                'tab2': {
+                    template: 'Explain {insert concept here} as if I\'m {insert audience level here}',
+                    example: 'Example: "Explain quantum mechanics as if I\'m in 5th grade"'
+                },
+                'tab3': {
+                    template: 'Give me {insert number here} ideas for {insert topic here}',
+                    example: 'Example: "Give me 10 ideas for things to do when visiting Boston"'
+                },
+                'tab4': {
+                    template: 'Write a {insert type here} letter to {insert recipient here} about {insert topic here}',
+                    example: 'Example: "Write a complaint letter to my city councilman about noisy neighbors"'
+                }
+            };
+
             // Load saved data on page load
             window.addEventListener('DOMContentLoaded', function() {
                 const savedPrompt = sessionStorage.getItem('first_prompt');
                 const savedOutput = sessionStorage.getItem('first_output');
+                const selectedTab = sessionStorage.getItem('selected_tab') || 'tab1';
+
+                // Load content based on selected tab
+                const content = tabContent[selectedTab];
+                document.getElementById('template-text').textContent = content.template;
+                document.getElementById('example-text').textContent = content.example;
 
                 if (savedPrompt) {
                     document.getElementById('prompt-input').value = savedPrompt;
@@ -93,7 +119,10 @@
         </style>
     </form>
 
-    <div class="flex justify-center">
+    <div class="flex justify-center gap-4">
+        <a href="/options" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+            Back
+        </a>
         <a href="/clarity" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Next
         </a>
